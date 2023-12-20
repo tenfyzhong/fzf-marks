@@ -29,7 +29,7 @@ function jump
     set jumpline $argv[1]
     if test -n $jumpline
         set -l jumpdir (echo "$jumpline" | sed 's/.*: \(.*\)$/\1/' | sed "s#^~#$HOME#")
-        set -l bookmarks (_handle_symlinks)
+        set -l bookmarks (_handle_symlinks_mark)
         cd $jumpdir
         commandline -f repaint
     end
@@ -37,7 +37,7 @@ end
 
 function dmark
     set marks_to_delete $argv
-    set -l bookmarks (_handle_symlinks)
+    set -l bookmarks (_handle_symlinks_mark)
     echo "** The following marks have been deleted **"
     for i in (seq 1 3 (count $marks_to_delete))
         set -l begin $i
