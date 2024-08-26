@@ -5,21 +5,23 @@ function mark -d 'mark this directory'
         return 1
     end
 
-    if set -q _flag_help 
+    if set -q _flag_help
         _mark_help
         return 0
     end
 
-    if test -z $argv
-        _mark_help
-        return 2
+    set tag "$argv"
+    # use the current directory name as the tag
+    if test -z "$tag"
+        set tag (pwd)
+        set tag (basename $tag)
     end
 
 
     command -v fzf > /dev/null 2>&1 or return
     _init_fzf_marks
 
-    set -l mark_to_add "$argv : "(pwd)
+    set -l mark_to_add "$tag : "(pwd)
 
     if command grep -qxFe "$mark_to_add" "$FZF_MARKS_FILE"
         echo "** The following mark already exists **"
