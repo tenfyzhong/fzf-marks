@@ -1,9 +1,9 @@
 function fzm
-    command -v fzf > /dev/null 2>&1 or return
+    command -v fzf >/dev/null 2>&1 or return
     _init_fzf_marks
 
     set -l marks_del $FZF_MARKS_DELETE
-    set -lq marks_del[1]; or set marks_del[1] "ctrl-d"
+    set -lq marks_del[1]; or set marks_del[1] ctrl-d
 
     set lines (_color_marks < $FZF_MARKS_FILE | eval $FZF_MARKS_COMMAND \
                --ansi \
@@ -19,13 +19,13 @@ function fzm
     end
     set -l key (echo "$lines" | head -1 | string split " ")
     if test $marks_del = $key[1]
-        dmark $key[2..-1]
+        _dmark $key[2..-1]
     else
-        jump (echo "$lines" | tail -1)
+        _jump (echo "$lines" | tail -1)
     end
 end
 
-function jump
+function _jump
     set jumpline $argv[1]
     if test -n $jumpline
         set -l jumpdir (echo "$jumpline" | sed 's/.*: \(.*\)$/\1/' | sed "s#^~#$HOME#")
@@ -35,7 +35,7 @@ function jump
     end
 end
 
-function dmark
+function _dmark
     set marks_to_delete $argv
     set -l bookmarks (_handle_symlinks_mark)
     echo "** The following marks have been deleted **"
@@ -49,4 +49,3 @@ function dmark
     end
     commandline -f repaint
 end
-
